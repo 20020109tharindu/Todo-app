@@ -1,168 +1,172 @@
-# Todo Fullstack App
+# 📝 To-Do Task Web Application  
 
-This repository contains a simple fullstack Todo web application with:
+## 🚀 Overview  
+This is a **Full Stack To-Do Task Management Application** built as part of the **Full Stack Engineer Take-Home Assessment**.  
+The app allows users to:  
+- ✅ Create to-do tasks by providing a **title** and **description**.  
+- 🕔 View only the **most recent 5 tasks**.  
+- 🧬 Mark tasks as **completed**, which automatically hides them from the list.  
 
-- Backend: Spring Boot (Java 17, Maven)
-- Frontend: React + Vite + Tailwind CSS
-- Database: MySQL
-- Orchestration: Docker Compose
-
-This README explains how to run the app locally and via Docker, the API contract, environment variables, and common troubleshooting steps (Windows/PowerShell specific notes included).
-
-## Table of contents
-
-- [Prerequisites](#prerequisites)
-- [Quickstart (Docker Compose)](#quickstart-docker-compose)
-- [Run components locally (dev)](#run-components-locally-dev)
-- [API reference](#api-reference)
-- [Configuration / environment variables](#configuration--environment-variables)
-- [Ports and URLs](#ports-and-urls)
-- [Troubleshooting (common Docker/Windows issues)](#troubleshooting-common-dockerwindows-issues)
-- [Project structure](#project-structure)
-- [License & Maintainers](#license--maintainers)
-
-
-## Prerequisites
-
-- Git
-- Java 17 (for local backend development / running tests)
-- Maven (if you run the backend locally)
-- Node 18+ and npm (if you run the frontend locally)
-- Docker & Docker Compose (to run everything together)
-
-
-## Quickstart (Docker Compose)
-
-This project includes a `docker-compose.yml` that brings up three services:
-
-- `database` (MySQL 8.0)
-- `backend` (Spring Boot — built with Maven inside Docker)
-- `frontend` (React built with Vite, served by nginx)
-
-From the repository root (PowerShell):
-
-```powershell
-# build and start services
-docker-compose up --build
-
-# stop and remove containers
-docker-compose down
-```
-
-Notes:
-
-- The compose file maps the MySQL server to host port 3307 (container port 3306).
-- Backend is exposed on host port 8080.
-- Frontend is exposed on host port 80.
-- If you see a warning about the `version` attribute in `docker-compose.yml` being obsolete, it's safe to remove it — compose will still work.
-
-
-## Run components locally (dev)
-
-Run backend locally (useful for debugging):
-
-```powershell
-cd backend
-# run with Maven (requires JDK & Maven installed)
-./mvnw spring-boot:run
-```
-
-Run frontend locally (fast dev server with HMR):
-
-```powershell
-cd frontend
-npm ci
-npm run dev
-```
-
-When running the frontend dev server, it expects the backend API at `http://localhost:8080/api/tasks` (CORS is allowed for common localhost origins in the backend configuration).
-
-
-## API reference
-
-Base path: `/api/tasks`
-
-- GET `/api/tasks` — returns recent tasks (200 OK)
-- POST `/api/tasks` — create a new task. Request body: JSON representation of `Task`. Returns created Task (201 Created)
-- PATCH `/api/tasks/{id}/complete` — mark a task as completed (204 No Content)
-
-Example create request body:
-
-```json
-{
-  "title": "Buy milk",
-  "description": "2 liters",
-  "completed": false
-}
-```
-
-
-## Configuration / environment variables
-
-When running with Docker Compose, the backend reads database connection configuration from environment variables set in `docker-compose.yml`.
-
-Key environment variables (as provided in compose):
-
-- SPRING_DATASOURCE_URL — JDBC URL for MySQL (compose uses `jdbc:mysql://database:3306/todo_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC`)
-- SPRING_DATASOURCE_USERNAME — database user (default: `root`)
-- SPRING_DATASOURCE_PASSWORD — database password (default: `rootpassword` in compose)
-
-If you run the backend locally, you can also edit `backend/src/main/resources/application.properties` to set `spring.datasource.*` values. The project currently contains an example `application.properties` using:
-
-```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/todo_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-spring.datasource.username=root
-spring.datasource.password=20020109
-spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
-
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
-```
-
-Note: The local `application.properties` contains a different password (`20020109`). If you run the backend locally and use the Docker database, make sure the credentials match. When using Docker Compose, the backend is configured to connect to the `database` service with username `root` and password `rootpassword` (set in `docker-compose.yml`).
-
-
-## Ports and URLs
-
-- Frontend: http://localhost/ (host port 80)
-- Backend API: http://localhost:8080/api/tasks
-- MySQL (container): 3306 (container port; host mapped to 3307)
-
-
-## Troubleshooting (common Docker / Windows issues)
-
-- Error: "unable to prepare context: path ... not found" — make sure `docker-compose.yml` build `context:` paths point to existing directories. In this repo they should be `./backend` and `./frontend`.
-- Error: "failed to read dockerfile: open Dockerfile: no such file or directory" — this project uses `DockerFile` (capital F). If your Docker/Compose expects `Dockerfile` lowercase, edit `docker-compose.yml` to explicitly set `dockerfile: DockerFile` under the `build:` section for each service (this repo already does so).
-- Compose warning about `version` being obsolete — safe to remove the `version:` top-level key from `docker-compose.yml` if present.
-- If containers fail to start due to DB connection errors, check the following:
-  - Database container health: `docker ps` and `docker logs todo-db`
-  - Backend logs: `docker logs todo-backend`
-  - Confirm the backend is using `database:3306` in its JDBC URL when running inside compose.
-
-Windows PowerShell notes:
-
-- Run docker-compose commands in an elevated PowerShell if you face permission issues.
-- Use semicolons (;) when joining multiple commands on one line in PowerShell.
-
-
-## Project structure
-
-- `backend/` — Spring Boot application
-  - Entry: `TodoBackendApplication.java`
-  - Controller: `TaskController.java` (routes under `/api/tasks`)
-  - Service and Repository: `service/` and `repository/`
-
-- `frontend/` — React + Vite project
-  - `package.json` contains scripts: `dev`, `build`, `preview`
-
-- `docker-compose.yml` — orchestrates `database`, `backend`, `frontend` services
-
-
-## Maintainers
-
-If you find issues or want to contribute, please open an issue or a PR with a clear description of the change.
-
+All components — **frontend**, **backend**, and **database** — are **fully containerized** and can be run using **Docker Compose**.
 
 ---
 
-Last updated: 2025-10-06
+## 🏧 Architecture  
+
+The system consists of three main services:  
+
+| Component | Technology | Description |
+|------------|-------------|-------------|
+| **Frontend** | React (Vite) | Single Page Application (SPA) for task management |
+| **Backend** | Spring Boot (Java 17) | REST API for managing tasks |
+| **Database** | MySQL 8.0 | Relational database storing tasks |
+| **Testing** | JUnit, Mockito, MockMvc, H2 | Backend unit and integration testing |
+
+---
+
+## 🧉 System Design  
+
+**Data Model (task table):**
+| Column | Type | Description |
+|---------|------|-------------|
+| `id` | BIGINT (PK, Auto Increment) | Unique identifier for the task |
+| `title` | VARCHAR(255) | Task title |
+| `description` | VARCHAR(255) | Task description |
+| `completed` | BOOLEAN | Task completion status |
+| `created_at` | DATETIME | Auto-generated timestamp |
+
+---
+
+## 🐳 Docker Setup  
+
+### 1️⃣ Prerequisites  
+Ensure you have the following installed:
+- Docker  
+- Docker Compose  
+- Git  
+
+### 2️⃣ Clone the Repository  
+```bash
+git clone https://github.com/<your-username>/todo-app.git
+cd todo-app
+```
+
+### 3️⃣ Run All Containers  
+```bash
+docker-compose up --build
+```
+
+This will start:  
+- 🗄️ `todo-db` → MySQL database on port **3307**  
+- ⚙️ `todo-backend` → Spring Boot backend on port **8080**  
+- 💻 `todo-frontend` → React frontend on port **80**
+
+### 4️⃣ Access the Application  
+Open your browser and navigate to:  
+🔗 **http://localhost**
+
+---
+
+## 🧪 Running Tests  
+
+### 🧠 Backend Tests
+Run inside the backend directory:
+```bash
+mvn test
+```
+
+This executes:
+- **Unit tests** (Mockito-based) for service and repository layers  
+- **Integration tests** (MockMvc-based) for REST API endpoints  
+- Uses **H2 in-memory database** for isolation  
+
+🗾 A coverage report can be generated using:
+```bash
+mvn clean verify
+```
+You can then find coverage reports under:
+```
+backend/target/site/jacoco/index.html
+```
+
+---
+
+## ⚙️ Configuration  
+
+### 🗂️ `src/main/resources/application.properties`
+```properties
+spring.datasource.url=jdbc:mysql://database:3306/todo_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+spring.datasource.username=root
+spring.datasource.password=rootpassword
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect
+```
+
+### 🧪 `src/test/resources/application-test.properties`
+```properties
+spring.datasource.url=jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=
+spring.jpa.hibernate.ddl-auto=create-drop
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+```
+
+---
+
+## 🧱 Project Structure  
+
+```
+todo-app/
+├── backend/
+│   ├── src/
+│   │   ├── main/java/com/example/todo_backend/
+│   │   ├── test/java/com/example/todo_backend/
+│   │   └── resources/
+│   ├── pom.xml
+│   └── Dockerfile
+│
+├── frontend/
+│   ├── src/
+│   ├── package.json
+│   └── Dockerfile
+│
+├── docker-compose.yml
+└── README.md
+```
+
+---
+
+## 🤓 API Endpoints  
+
+| Method | Endpoint | Description |
+|---------|-----------|-------------|
+| `GET` | `/api/tasks` | Fetch recent 5 incomplete tasks |
+| `POST` | `/api/tasks` | Create a new task |
+| `PATCH` | `/api/tasks/{id}/complete` | Mark a task as completed |
+
+---
+
+## 🧠 Tests Implemented  
+
+### ✅ **Unit Tests**
+- `TaskServiceImplTest.java` → Service layer tests using Mockito  
+- `TaskRepositoryTest.java` → Repository layer tests with H2  
+
+### ✅ **Integration Tests**
+- `TaskControllerIntegrationTest.java` → Full REST API testing using MockMvc and H2  
+
+---
+
+## 🤉 Notes  
+- H2 Database is **only used for testing** (isolated from MySQL).  
+- All tests run automatically during `mvn test`.  
+- MySQL volume ensures persistent task data even after container restart.  
+
+---
+
+## 🏁 Author  
+👨‍💻 **H.P.A.T. Lakshan**  
+BSc (Hons) in Information Technology (Specialized in IT)  
+Email: *[Add your email here]*  
