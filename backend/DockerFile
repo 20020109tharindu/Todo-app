@@ -5,7 +5,11 @@ WORKDIR /app
 COPY pom.xml .
 COPY src ./src
 
-RUN mvn clean package -DskipTests
+# Run tests and generate coverage report
+RUN mvn clean test jacoco:report
+
+# Build the application (skip tests since we already ran them)
+RUN mvn package -DskipTests
 
 FROM eclipse-temurin:17-jre-alpine
 

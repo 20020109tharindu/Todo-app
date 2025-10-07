@@ -1,5 +1,6 @@
 package com.example.todo_backend.service;
 
+import com.example.todo_backend.exception.TaskNotFoundException;
 import com.example.todo_backend.model.Task;
 import com.example.todo_backend.repository.TaskRepository;
 import org.springframework.stereotype.Service;
@@ -23,9 +24,11 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void markTaskAsDone(Long id) {
-        Task task = repository.findById(id).orElseThrow(() -> new RuntimeException("Task not found"));
-        task.setCompleted(true);
-        repository.save(task);
-    }
+public void markTaskAsDone(Long id) {
+    Task task = repository.findById(id)
+            .orElseThrow(() -> new TaskNotFoundException("Task not found with ID: " + id));
+    task.setCompleted(true);
+    repository.save(task);
+}
+
 }
