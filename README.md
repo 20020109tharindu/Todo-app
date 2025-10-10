@@ -168,5 +168,4 @@ todo-app/
 
 ## 🏁 Author  
 👨‍💻 **H.P.A.T. Lakshan**  
-BSc (Hons) in Information Technology (Specialized in IT)  
-Email: *[Add your email here]*  
+BSc (Hons) in Information Technology (Specialized in IT)    
